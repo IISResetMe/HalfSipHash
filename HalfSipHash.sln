@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HalfSipHash", "src\HalfSipHash.csproj", "{9B54D0EF-EE49-4FEF-A726-A94511585132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{F41D17A2-8F99-435C-8255-6A0A35565303}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HalfSipHash.Tests", "tests\HalfSipHash.Tests.csproj", "{D396C171-DB5C-43EF-9847-B82E6298F571}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,9 @@ Global
 		{F41D17A2-8F99-435C-8255-6A0A35565303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F41D17A2-8F99-435C-8255-6A0A35565303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F41D17A2-8F99-435C-8255-6A0A35565303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D396C171-DB5C-43EF-9847-B82E6298F571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D396C171-DB5C-43EF-9847-B82E6298F571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D396C171-DB5C-43EF-9847-B82E6298F571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D396C171-DB5C-43EF-9847-B82E6298F571}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
