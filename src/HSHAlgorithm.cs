@@ -15,13 +15,17 @@ namespace HalfSipHash
 
         private volatile byte[] _overflow;
 
-        private uint v0 = 0, v1 = 0;
-        private uint v2 = 0x6c796765U, v3 = 0x74656462U;
+        private uint v0, v1, v2, v3;
 
         public HalfSipHash32(byte[] key)
         {
             _key = key;
             _overflow = new byte[0];
+            Initialize();
+        }
+
+        private void Reset()
+        {
             Initialize();
         }
 
@@ -35,10 +39,13 @@ namespace HalfSipHash
 
             uint k0 = BitConverter.ToUInt32(_key);
             uint k1 = BitConverter.ToUInt32(_key, 4);
-            v3 ^= k1;
-            v2 ^= k0;
-            v1 ^= k1;
-            v0 ^= k0;
+            v3 = 0x74656462U ^ k1;
+            v2 = 0x6c796765U ^ k0;
+            v1 = 0 ^ k1;
+            v0 = 0 ^ k0;
+
+            _inputLength = 0;
+            _overflow = new byte[0];
         }
 
         private void ProcessInput()
@@ -127,6 +134,8 @@ namespace HalfSipHash
             (output)[1] = (byte)((b) >> 8);
             (output)[2] = (byte)((b) >> 16);
             (output)[3] = (byte)((b) >> 24);
+
+            Reset();
 
             return output;
         }
