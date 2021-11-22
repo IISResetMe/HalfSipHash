@@ -4,58 +4,60 @@ using System.Collections.Generic;
 
 using Xunit;
 
-namespace HalfSipHash.Tests;
-
-public class HashTest
+namespace HalfSipHash.Tests
 {
-    [Fact()]
-    public void TestNullHash()
-    {
-        var hasher = new HalfSipHash32(Enumerable.Repeat<byte>(0, 8).ToArray());
-        var hash = hasher.ComputeHash(new byte[0]);
-        Assert.Equal<byte>(new byte[]{ 0x7E, 0x2D, 0xB2, 0x05 }, hash);
-    }
 
-    [Fact()]
-    public void TestReuse()
+    public class HashTest
     {
-        var hasher = new HalfSipHash32(Enumerable.Range(0, 8).Select(i => (byte)i).ToArray());
-        var encoding = System.Text.Encoding.UTF8;
-        var input = "This text will require multiple transforms due to its length";
-        var buffer = encoding.GetBytes(input);
-        var refHash = hasher.ComputeHash(buffer);
-
-        var testCount = 1100;
-        while(--testCount >= 0){
-            Assert.Equal<byte>(refHash, hasher.ComputeHash(buffer));
-        }
-    }
-
-    [Fact()]
-    public void TestReferenceImplementation()
-    {
-        var k = new byte[16];
-        var _in = new byte[64];
-        for(byte i = 0; i < 16; i++)
-            k[i] = i;
-        
-        for (byte i = 0; i < 64; i++)
+        [Fact()]
+        public void TestNullHash()
         {
-            _in[i] = i;
-            var sipHash = new HalfSipHash32(k);
-            var hash = sipHash.ComputeHash(_in, 0, i);
-
-            var expect = BitConverter.ToString(c_vectors[i]).Replace("-","");
-            var actual = BitConverter.ToString(hash).Replace("-","");
-            Assert.True(expect == actual);
+            var hasher = new HalfSipHash32(Enumerable.Repeat<byte>(0, 8).ToArray());
+            var hash = hasher.ComputeHash(new byte[0]);
+            Assert.Equal<byte>(new byte[] { 0x7E, 0x2D, 0xB2, 0x05 }, hash);
         }
-    }
 
-    /*
-    * Test cases lifted directly from HalfSipHash C reference implementation @ https://github.com/veorq/SipHash/blob/master/halfsiphash.c
-    */
-    internal static readonly byte[][] c_vectors = new byte[][]
-    {
+        [Fact()]
+        public void TestReuse()
+        {
+            var hasher = new HalfSipHash32(Enumerable.Range(0, 8).Select(i => (byte)i).ToArray());
+            var encoding = System.Text.Encoding.UTF8;
+            var input = "This text will require multiple transforms due to its length";
+            var buffer = encoding.GetBytes(input);
+            var refHash = hasher.ComputeHash(buffer);
+
+            var testCount = 1100;
+            while (--testCount >= 0)
+            {
+                Assert.Equal<byte>(refHash, hasher.ComputeHash(buffer));
+            }
+        }
+
+        [Fact()]
+        public void TestReferenceImplementation()
+        {
+            var k = new byte[16];
+            var _in = new byte[64];
+            for (byte i = 0; i < 16; i++)
+                k[i] = i;
+
+            for (byte i = 0; i < 64; i++)
+            {
+                _in[i] = i;
+                var sipHash = new HalfSipHash32(k);
+                var hash = sipHash.ComputeHash(_in, 0, i);
+
+                var expect = BitConverter.ToString(c_vectors[i]).Replace("-", "");
+                var actual = BitConverter.ToString(hash).Replace("-", "");
+                Assert.True(expect == actual);
+            }
+        }
+
+        /*
+        * Test cases lifted directly from HalfSipHash C reference implementation @ https://github.com/veorq/SipHash/blob/master/halfsiphash.c
+        */
+        internal static readonly byte[][] c_vectors = new byte[][]
+        {
         new byte[]{ 0xa9, 0x35, 0x9f, 0x5b, },
         new byte[]{ 0x27, 0x47, 0x5a, 0xb8, },
         new byte[]{ 0xfa, 0x62, 0xa6, 0x03, },
@@ -120,5 +122,6 @@ public class HashTest
         new byte[]{ 0x42, 0x8f, 0xcb, 0xb9, },
         new byte[]{ 0xbd, 0x83, 0x99, 0x7a, },
         new byte[]{ 0x59, 0xea, 0x4a, 0x74, },
-    };
+        };
+    }
 }
