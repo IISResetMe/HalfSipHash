@@ -30,31 +30,52 @@ namespace HalfSipHash.Tests
         private HalfSipHash32 _hsh = new HalfSipHash32(_key);
         private HMACSHA1 _hmac = new HMACSHA1(_key);
 
-        private int N = 1024;
-        private byte[] _data;
+        [Params(10, 128, 1024, 4096)]
+        public int N { get; set; }
+        private byte[] _data = new byte[0];
 
-        public HalfSipHashVsHMACSHA1Benchmark()
+        [GlobalSetup]
+        private void SeedData()
         {
             _data = new byte[N];
             new Random().NextBytes(_data);
         }
 
+        [Params(30, 400, 1000)]
+        public int HashRounds { get; set; }
+
         [Benchmark()]
         public byte[] TestHSH(){
             byte[] hash = new byte[0];
-            int hashRounds = 10000;
-            for(int i = 0; i < hashRounds; i++)
+            for(int i = 0; i < HashRounds; i++)
                 hash = _hsh.ComputeHash(_data);
             
             return hash;
         }
 
-        [Benchmark]
+        [Benchmark()]
+        public byte[] TestHSHFromNew(){
+            byte[] hash = new byte[0];
+            for(int i = 0; i < HashRounds; i++)
+                hash = new HalfSipHash32(_key).ComputeHash(_data);
+            
+            return hash;
+        }
+
+        [Benchmark()]
         public byte[] TestHMAC(){
             byte[] hash = new byte[0];
-            int hashRounds = 10000;
-            for(int i = 0; i < hashRounds; i++)
+            for(int i = 0; i < HashRounds; i++)
                 hash = _hmac.ComputeHash(_data);
+            
+            return hash;
+        }
+
+        [Benchmark()]
+        public byte[] TestHMACFromNew(){
+            byte[] hash = new byte[0];
+            for(int i = 0; i < HashRounds; i++)
+                hash = new HMACSHA1(_key).ComputeHash(_data);
             
             return hash;
         }

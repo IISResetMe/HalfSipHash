@@ -22,7 +22,7 @@ namespace HalfSipHash.Tests
         {
             var hasher = new HalfSipHash32(Enumerable.Range(0, 8).Select(i => (byte)i).ToArray());
             var encoding = System.Text.Encoding.UTF8;
-            var input = "This text will require multiple transforms due to its length";
+            var input = "This text will require multiple transforms due to its length!";
             var buffer = encoding.GetBytes(input);
             var refHash = hasher.ComputeHash(buffer);
 
