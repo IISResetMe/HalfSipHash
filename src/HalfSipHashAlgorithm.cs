@@ -10,11 +10,9 @@ namespace HalfSipHash
             private const int cROUNDS = 2;
             private const int fROUNDS = 4;
 
-            private Queue<byte> _input = new Queue<byte>();
-            private volatile int _inputLength;
-
-            private volatile byte[] _overflow;
-            private int _oid = 0;
+            private byte[] _input;
+            private int _inputLength;
+            private int _cursor = 0;
 
             private uint v0, v1, v2, v3;
 
@@ -26,28 +24,18 @@ namespace HalfSipHash
                 v0 = 0 ^ k0;
 
                 _inputLength = 0;
-                _overflow = new byte[4];
-            }
-
-            internal void Add(byte b)
-            {
-                _overflow[_oid++] = b;
-                _oid %= 4;
-                if(_oid == 0)
-                {
-                    ProcessInput(BitConverter.ToUInt32(_overflow));
-                }
+                _input = new byte[4];
             }
 
             internal void Process(byte[] array, int offset, int length)
             {
                 for(int i = 0; i < length; i++)
                 {
-                    _overflow[_oid++] = array[i + offset];
-                    _oid %= 4;
-                    if(_oid == 0)
+                    _input[_cursor++] = array[i + offset];
+                    _cursor %= 4;
+                    if(_cursor == 0)
                     {
-                        ProcessInput(BitConverter.ToUInt32(_overflow));
+                        ProcessInput(BitConverter.ToUInt32(_input));
                     }
                 }
             }
@@ -68,18 +56,18 @@ namespace HalfSipHash
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal uint Finalize()
             {
-                var length = _inputLength + _oid;
+                var length = _inputLength + _cursor;
 
                 uint b = ((uint)length) << 24;
 
-                if(_oid > 2)
-                    b |= ((uint)_overflow[2]) << 16;
+                if(_cursor > 2)
+                    b |= ((uint)_input[2]) << 16;
 
-                if(_oid > 1)
-                    b |= ((uint)_overflow[1]) << 8;
+                if(_cursor > 1)
+                    b |= ((uint)_input[1]) << 8;
                 
-                if(_oid > 0)
-                    b |= (uint)_overflow[0];
+                if(_cursor > 0)
+                    b |= (uint)_input[0];
                 
                 v3 ^= b;
 
